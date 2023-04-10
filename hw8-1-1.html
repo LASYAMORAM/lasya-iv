@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>D3 Bar Chart with Color Scale</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
+    <script src="https://d3js.org/d3-legend.v4.min.js"></script>
+  </head>
+  <body>
+    <svg id="chart"></svg>
+
+    <script>
+      //data 
+      const data = [
+          { year: "2021", value: 911 },
+          { year: "2020", value: 823 },
+          { year: "2022", value: 700 },
+          { year: "2017", value: 523 },
+          { year: "2015", value: 456 },
+          { year: "2018", value: 432 },
+          { year: "2023", value: 430 },
+          { year: "2019", value: 421 },
+          { year: "2016", value: 334 },
+          { year: "2014", value: 170 },
+        ];
+
+      const margin = { top: 20, right: 25, bottom: 50, left: 50 },
+        width = 600 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+      const x = d3
+        .scaleBand()
+        .range([0, width])
+        .padding(0.1)
+        .domain(data.map((d) => d.year));
+
+      const y = d3.scaleLinear().range([height, 0]).domain([0, 1000]);
+
+      const colorScale = d3
+        .scaleSequential()
+        .interpolator(d3.interpolateOranges)
+        .domain([0, 1000]);
+        
+
+      const svg = d3
+        .select("#chart")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      svg
+        .selectAll(".bar")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", (d) => x(d.year))
+        .attr("y", (d) => y(d.value))
+        .attr("width", x.bandwidth())
+        .attr("height", (d) => height - y(d.value))
+        .attr("fill", (d) => colorScale(d.value));
+
+      // Add the x axis//
+      svg
+        .append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x));
+        
+
+      // Add the y axis//
+      svg.append("g").call(d3.axisLeft(y));
+      
+
+      // Add the color scale//
+      const legendWidth = 200,
+        legendHeight = 20;
+
+      
+        
+
+      const colorLegend = d3
+       
+      // Add the x-axis label//
+svg
+  .append("text")
+  .attr("class", "axis-label")
+  .attr("transform", `translate(${width / 2}, ${height + margin.top +20})`)
+  .style("text-anchor", "middle")
+  .text("Year");
+  
+
+// Add the y-axis label//
+svg
+  .append("text")
+  .attr("class", "axis-label")
+  .attr("transform", "rotate(-90)")
+  .attr("y", 0 - margin.left)
+  .attr("x", 0 - height / 2)
+  .attr("dy", "1em")
+  .style("text-anchor", "middle")
+  .text("Profit in 1000 USD")
+  
+
+  svg.select(".axis-label.x-axis")
+  .attr("transform", `translate(${width / 2}, ${height + margin.top + 40})`);
+
+// Adjusting the position of the y-axis label
+svg.select(".axis-label.y-axis")
+  .attr("transform", `rotate(-90) translate(${-height / 2}, ${-margin.left + 20})`);
+
+     // legend.call(colorLegend);
+    </script>
+  </body>
+</html>
